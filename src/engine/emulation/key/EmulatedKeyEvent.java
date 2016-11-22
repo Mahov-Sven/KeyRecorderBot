@@ -1,16 +1,15 @@
 package engine.emulation.key;
 
-import java.awt.event.KeyEvent;
-
 import engine.emulation.EmulatedEvent;
 import engine.util.Position;
+import engine.util.Time;
 
 public abstract class EmulatedKeyEvent extends EmulatedEvent{
 	
-	protected KeyEvent key;
+	protected int key;
 
-	public EmulatedKeyEvent(Position position, KeyEvent key) {
-		super(position);
+	public EmulatedKeyEvent(Time time, int key) {
+		super(time);
 		this.key = key;
 	}
 }

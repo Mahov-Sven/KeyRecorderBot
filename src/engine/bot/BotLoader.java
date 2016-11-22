@@ -1,4 +1,4 @@
-package engine.main;
+package engine.bot;
 
 public class BotLoader {
 

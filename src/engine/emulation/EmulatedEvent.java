@@ -4,14 +4,15 @@ import java.awt.AWTException;
 import java.awt.Robot;
 
 import engine.util.Position;
+import engine.util.Time;
 
 public abstract class EmulatedEvent {
 
-	protected Position position;
+	protected Time time;
 	protected static Robot emulator;
 	
-	public EmulatedEvent(Position position){
-		this.position = position;
+	public EmulatedEvent(Time time){
+		this.time = time;
 	}
 	
 	public static void init(){
@@ -23,6 +24,10 @@ public abstract class EmulatedEvent {
 	}
 	
 	public abstract void execute();
+	
+	public boolean isTime(long time){
+		return this.time.isTime(time);
+	}
 	
 	public abstract String toString();
 }

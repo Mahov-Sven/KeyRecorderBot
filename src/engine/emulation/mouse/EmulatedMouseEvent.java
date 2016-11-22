@@ -1,16 +1,19 @@
 package engine.emulation.mouse;
 
-import java.awt.event.InputEvent;
-
 import engine.emulation.EmulatedEvent;
 import engine.util.Position;
+import engine.util.Time;
 
 public abstract class EmulatedMouseEvent extends EmulatedEvent{
 
-	protected InputEvent mouseButton;
+	protected int mouseButton;
 	
-	public EmulatedMouseEvent(Position position, InputEvent mouseButton) {
-		super(position);
+	public EmulatedMouseEvent(Time time, int mouseButton) {
+		super(time);
 		this.mouseButton = mouseButton;
+	}
+	
+	public EmulatedMouseEvent(Time time){
+		super(time);
 	}
 }

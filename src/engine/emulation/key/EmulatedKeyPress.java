@@ -3,18 +3,18 @@ package engine.emulation.key;
 import java.awt.event.KeyEvent;
 
 import engine.util.Position;
+import engine.util.Time;
 
 public class EmulatedKeyPress extends EmulatedKeyEvent{
 
-	public EmulatedKeyPress(Position position, KeyEvent key) {
-		super(position, key);
+	public EmulatedKeyPress(Time time, int key) {
+		super(time, key);
 		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public void execute() {
-		// TODO Auto-generated method stub
-		
+		emulator.keyPress(key);
 	}
 
 	@Override

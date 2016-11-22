@@ -3,20 +3,17 @@ package engine.emulation.key;
 import java.awt.event.KeyEvent;
 
 import engine.util.Position;
+import engine.util.Time;
 
-public class EmulatedKeyHeld extends EmulatedKeyEvent{
-	
-	private long time;
+public class EmulatedKeyRelease extends EmulatedKeyEvent{
 
-	public EmulatedKeyHeld(Position position, KeyEvent key, long time) {
-		super(position, key);
-		this.time = time;
+	public EmulatedKeyRelease(Time time, int key) {
+		super(time, key);
 	}
 
 	@Override
 	public void execute() {
-		// TODO Auto-generated method stub
-		
+		emulator.keyRelease(key);
 	}
 
 	@Override
