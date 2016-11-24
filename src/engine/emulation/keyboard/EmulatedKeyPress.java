@@ -1,4 +1,4 @@
-package engine.emulation.key;
+package engine.emulation.keyboard;
 
 import java.awt.event.KeyEvent;
 

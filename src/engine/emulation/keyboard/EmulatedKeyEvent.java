@@ -1,4 +1,4 @@
-package engine.emulation.key;
+package engine.emulation.keyboard;
 
 import engine.emulation.EmulatedEvent;
 import engine.util.Position;

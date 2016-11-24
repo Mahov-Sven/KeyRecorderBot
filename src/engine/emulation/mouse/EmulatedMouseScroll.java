@@ -1,21 +1,20 @@
 package engine.emulation.mouse;
 
-import java.awt.event.InputEvent;
-
-import engine.util.Position;
 import engine.util.Time;
 
 public class EmulatedMouseScroll extends EmulatedMouseEvent{
+	
+	private int delta;
+	private static final int ADJUSTMENT = 32;
 
-	public EmulatedMouseScroll(Time time, int mouseButton) {
+	public EmulatedMouseScroll(Time time, int mouseButton, int delta) {
 		super(time, mouseButton);
-		// TODO Auto-generated constructor stub
+		this.delta = -delta/ADJUSTMENT;
 	}
 
 	@Override
 	public void execute() {
-		// TODO Auto-generated method stub
-		
+		emulator.mouseWheel(delta);
 	}
 
 	@Override

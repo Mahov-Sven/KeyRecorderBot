@@ -2,6 +2,7 @@ package engine.main;
 
 import engine.bot.Bot;
 import engine.bot.BotRecorder;
+import engine.input.GlobalInput;
 
 public class Main{
 
@@ -9,6 +10,8 @@ public class Main{
 		
 		Bot bot = new Bot(null, null);
 		BotRecorder botRecorder = new BotRecorder(null, null);
+		GlobalInput input = new GlobalInput();
+		input.add(botRecorder);
 		
 		botRecorder.start();
 		System.out.println("Recording Started");
@@ -37,5 +40,6 @@ public class Main{
 		
 		System.out.println("Bot Done");
 		
+		input.cleanUp();
 	}
 }

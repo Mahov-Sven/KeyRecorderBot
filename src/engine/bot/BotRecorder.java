@@ -5,11 +5,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import engine.emulation.EmulatedEvent;
+import engine.emulation.EmulationEnd;
 import engine.emulation.mouse.EmulatedMouseMovement;
+import engine.emulation.mouse.EmulatedMousePress;
+import engine.emulation.mouse.EmulatedMouseRelease;
+import engine.emulation.mouse.EmulatedMouseScroll;
+import engine.input.NotifyableObjectByInputEvent;
 import engine.util.Position;
 import engine.util.Time;
+import lc.kra.system.keyboard.event.GlobalKeyEvent;
+import lc.kra.system.mouse.event.GlobalMouseEvent;
 
-public class BotRecorder implements Runnable{
+public class BotRecorder implements Runnable, NotifyableObjectByInputEvent{
 
 	private List<EmulatedEvent> botEvents;
 	//priority events are events which need to be executed between updates.
@@ -37,22 +44,66 @@ public class BotRecorder implements Runnable{
 	}
 	
 	public void testForEscapeSequence(){
-		if(System.nanoTime() - startTime >= 10 * Time.NANO) running = false;
+		if(System.nanoTime() - startTime >= 10 * Time.NANO) end();
 	}
 	
-	private Position previousMousePos = new Position(-1,-1);
+	public void end(){
+		botEvents.add(new EmulationEnd(new Time(System.nanoTime() - startTime)));
+		running = false;
+	}
 	
-	public void update(){
+	@Override
+	public void notifyOfInputKeyEvent(GlobalKeyEvent e) {
+		if(!running) return;
 		
-		testForEscapeSequence();
+		System.out.println(e + " | " + e.getKeyChar() + "| " + e.getTransitionState() + " | " + e.getVirtualKeyCode());
+	}
+
+	Position prevMousePos = new Position(-1,-1);
+	
+	@Override
+	public void notifyOfInputMouseEvent(GlobalMouseEvent e) {
+		if(!running) return;
 		
-		long deltaTime = System.nanoTime() - startTime;
+		Time time = new Time(System.nanoTime() - startTime);
+		Position mousePos = new Position(e.getX(),e.getY());
+		int buttonsPressed = e.getButtons();
+		//0x##### where 0x[Middle Button][][][Right Button][Left Button] and
+		//0x00000 means there are not buttons being pressed
 		
-		Position mousePos = Position.fromJPoint(MouseInfo.getPointerInfo().getLocation());
+		int mouseState = e.getTransitionState();
+		//0 = Mouse button is released
+		//1 = Mouse button is pressed
+		//2 = Mouse has been moved
+		//3 = Mouse wheel has been scrolled
 		
-		if(!mousePos.equals(previousMousePos)) botEvents.add(new EmulatedMouseMovement(mousePos, new Time(deltaTime)));
+		int buttonPressed = e.getButton();
+		//gives the current button pressed or released.
 		
-		previousMousePos = mousePos;
+		int VKbuttonPressed = 1 << (5 - buttonPressed);
+		//The Virtual Keyboard adjusted button
+		
+		int scrollDelta = e.getDelta();
+		//The ammount of scrolling requested
+
+		//System.out.println(e + " | " + e.getTransitionState() + " | " + e.getButtons() + " | " + e.getButton());
+		
+		if(!mousePos.equals(prevMousePos)){
+			botEvents.add(new EmulatedMouseMovement(mousePos, time));
+			prevMousePos = mousePos;
+		}
+		
+		if(mouseState == 0){
+			botEvents.add(new EmulatedMouseRelease(time, VKbuttonPressed));
+		}
+		
+		if(mouseState == 1){
+			botEvents.add(new EmulatedMousePress(time, VKbuttonPressed));
+		}
+		
+		if(mouseState == 3){
+			botEvents.add(new EmulatedMouseScroll(time, VKbuttonPressed, scrollDelta));
+		}
 	}
 
 	@Override
@@ -75,7 +126,7 @@ public class BotRecorder implements Runnable{
 					updates = 0;
 				}
 				
-				update();
+				testForEscapeSequence();
 				
 				updates++;
 			}
